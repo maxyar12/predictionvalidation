@@ -40,13 +40,16 @@ def comparison(wname,actname,predname,outname):
                 for stock in stock_data.keys():
                     if stock_data[stock][w+t-1][1] != None and stock_data[stock][w+t-1][2]!= None:
                         error =  abs(stock_data[stock][w+t-1][2]-stock_data[stock][w+t-1][1])
-                        win_errors.append(error)
+                        win_errors.append(round(error,2))
                     else:
                             error = 'ignore'
                     #print(str(w+t) + "|"+str(stock) +"|"+ str(stock_data[stock][w+t-1][1])+"  " +str(w+t) + "|"+str(stock) +"|"+ str(stock_data[stock][w+t-1][2])+"  " + str(error))
-                 
-            avg_error = sum(win_errors)/len(win_errors)  
-            outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+  "%.2f" % avg_error + '\n')
+
+            try:
+                avg_error = sum(win_errors)/len(win_errors)  
+                outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+  str(round(avg_error,2)) + '\n')
+            except ZeroDivisionError:
+                outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+  "NA" + '\n')
         
 if __name__ == '__main__':            
     window_path= sys.argv[1]

@@ -47,7 +47,7 @@ def comparison(wname,actname,predname,outname):
 
             try:
                 avg_error = sum(win_errors)/len(win_errors)  
-                outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+  str(round(avg_error,2)) + '\n')
+                outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+ "%.2f" % str(round(avg_error,2)) + '\n')
             except ZeroDivisionError:
                 outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+  "NA" + '\n')
         

@@ -35,8 +35,8 @@ def comparison(wname,actname,predname,outname):
     else:
         for w in range(num_hours +1 - window_size):
             
-            total = Decimal('0.00')             #store errors for later averaging
-            numst = Decimal('1.00')
+            total = Decimal('0.00')             #
+            numst = Decimal('0.00')
             for t in range(1,window_size+1):
                 for stock in stock_data.keys():
                     if stock_data[stock][w+t-1][1] !="absent" and stock_data[stock][w+t-1][2] != 'absent':

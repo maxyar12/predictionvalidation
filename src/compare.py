@@ -1,7 +1,7 @@
 # calculate average errors over sliding window and write to output
 
 import sys
-import decimal
+from decimal import *
 
 def comparison(wname,actname,predname,outname):    
 
@@ -9,12 +9,12 @@ def comparison(wname,actname,predname,outname):
     actual_file = open(actual_path, 'r')
     stock_data= {}
     hours = []
-
+    
     for line in actual_file.readlines():        #read-in actual stock data
         stock_hour = int(line.split("|")[0])
         hours.append(stock_hour)
         stock_id = line.split("|")[1]
-        stock_Ap = float(line.split("|")[2]) 
+        stock_Ap = Decimal(line.split("|")[2])
         if stock_hour > 1:
             stock_data[stock_id].append([stock_hour,stock_Ap,'absent'])
         else:
@@ -27,7 +27,7 @@ def comparison(wname,actname,predname,outname):
     outfile = open(out_path,'w')
     
     for line in predicted_file.readlines():      
-        stock_data[line.split("|")[1]][int(line.split("|")[0])-1][2] = float(line.split("|")[2]) 
+        stock_data[line.split("|")[1]][int(line.split("|")[0])-1][2] = Decimal(line.split("|")[2])
     predicted_file.close()
     
     if num_hours < window_size:
@@ -35,21 +35,24 @@ def comparison(wname,actname,predname,outname):
     else:
         for w in range(num_hours +1 - window_size):
             
-            win_errors = []             #store errors for later averaging
-            
+            total = Decimal('0.00')             #store errors for later averaging
+            numst = Decimal('1.00')
             for t in range(1,window_size+1):
                 for stock in stock_data.keys():
                     if stock_data[stock][w+t-1][1] !="absent" and stock_data[stock][w+t-1][2] != 'absent':
-                        error =  abs(stock_data[stock][w+t-1][1]-stock_data[stock][w+t-1][2])
-                        win_errors.append(error)
+                        error =  stock_data[stock][w+t-1][1]-stock_data[stock][w+t-1][2]
+                        if error.is_signed() == True:
+                            error = error*Decimal('-1.00')
+                        total = total + error
+                        numst = numst + Decimal('1.00')
                     else:
                             error = 'ignore'
                     #print(str(w+t) + "|"+str(stock) +"|"+ str(stock_data[stock][w+t-1][1])+"  " +str(w+t) + "|"+str(stock) +"|"+ str(stock_data[stock][w+t-1][2])+"  " + str(error))
 
             try:
-                avg_error = sum(win_errors)/(1.0*len(win_errors))
-                a = decimal.Decimal(str(avg_error))
-                rounded = a.quantize(decimal.Decimal('.01'), rounding=decimal.ROUND_05UP)
+                avg_error = total/numst
+                #a = decimal.Decimal(str(avg_error))
+                rounded = avg_error.quantize(Decimal('.01'), rounding=ROUND_HALF_UP)
                 outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+ str(rounded) + '\n')
             except ZeroDivisionError:
                 outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+  "NA" + '\n')

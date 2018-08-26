@@ -1,7 +1,8 @@
 # calculate average errors over sliding window and write to output
 
 import sys
-    
+import decimal
+
 def comparison(wname,actname,predname,outname):    
 
     window_size = int(open(wname, 'r').readlines()[0])
@@ -15,10 +16,10 @@ def comparison(wname,actname,predname,outname):
         stock_id = line.split("|")[1]
         stock_Ap = float(line.split("|")[2]) 
         if stock_hour > 1:
-            stock_data[stock_id].append([stock_hour,stock_Ap,None])
+            stock_data[stock_id].append([stock_hour,stock_Ap,'absent'])
         else:
             stock_data[stock_id] = []
-            stock_data[stock_id] = [[stock_hour,stock_Ap,None]]
+            stock_data[stock_id] = [[stock_hour,stock_Ap,'absent']]
     
     actual_file.close()
     num_hours = len(list(set(hours)))
@@ -38,16 +39,18 @@ def comparison(wname,actname,predname,outname):
             
             for t in range(1,window_size+1):
                 for stock in stock_data.keys():
-                    if stock_data[stock][w+t-1][1] != None and stock_data[stock][w+t-1][2]!= None:
-                        error =  abs(stock_data[stock][w+t-1][2]-stock_data[stock][w+t-1][1])
-                        win_errors.append(round(error,2))
+                    if stock_data[stock][w+t-1][1] !="absent" and stock_data[stock][w+t-1][2] != 'absent':
+                        error =  abs(stock_data[stock][w+t-1][1]-stock_data[stock][w+t-1][2])
+                        win_errors.append(error)
                     else:
                             error = 'ignore'
                     #print(str(w+t) + "|"+str(stock) +"|"+ str(stock_data[stock][w+t-1][1])+"  " +str(w+t) + "|"+str(stock) +"|"+ str(stock_data[stock][w+t-1][2])+"  " + str(error))
 
             try:
-                avg_error = sum(win_errors)/len(win_errors)  
-                outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+ "%.2f" % round(avg_error,2) + '\n')
+                avg_error = sum(win_errors)/(1.0*len(win_errors))
+                a = decimal.Decimal(str(avg_error))
+                rounded = a.quantize(decimal.Decimal('.01'), rounding=decimal.ROUND_05UP)
+                outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+ str(rounded) + '\n')
             except ZeroDivisionError:
                 outfile.write( str(w+1) +"|"+str(w+window_size) +"|"+  "NA" + '\n')
         

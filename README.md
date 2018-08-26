@@ -10,7 +10,7 @@ I don't do a whole lot of exception handling here, though I am aware that
 exception handling is important for dealing with real data, 
 
 
-I wasn't able to pass the test, I got 1405/1437 correct. The unmatched are all off by 0.01. I thought maybe it was a rounding issue, but this doens't seem to the case, so I am quite perplexed, if you could explain what I am doing wrong I would greatly appreciate, though I understand I probably won't receive the interview.
+I wasn't able to pass the test, I got 1405/1437 correct. The unmatched are all off by 0.01. I thought maybe it was a rounding issue, but this doesn't seem to be the case, so I am quite perplexed, if you could explain what I am doing wrong I would greatly appreciate, though I understand I probably won't receive the interview.
 
 Thank you
 
